@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(Spaste VERSION 1.0.0 LANGUAGES CXX)
+project(Spaste VERSION 1.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -64,6 +64,8 @@ install(FILES resources/icons/clipboard.svg
         RENAME spaste.svg)
 
 # Debian package via CPack
+# SHLIBDEPS is off on purpose: Ubuntu 24.04 emits *t64 package names that are
+# not installable on Debian / Ubuntu 22.04 / many derivatives (e.g. Alfa OS).
 set(CPACK_PACKAGE_NAME "spaste")
 set(CPACK_PACKAGE_VENDOR "Spaste")
 set(CPACK_PACKAGE_CONTACT "Spaste maintainers <spaste@users.noreply.github.com>")
@@ -75,7 +77,9 @@ set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS OFF)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS
+    "libqt6core6 | libqt6core6t64, libqt6gui6 | libqt6gui6t64, libqt6widgets6 | libqt6widgets6t64, libqt6svg6 | libqt6svg6t64, libqt6svgwidgets6 | libqt6svgwidgets6t64, qt6-qpa-plugins, libx11-6, libc6, libstdc++6, libgcc-s1")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Spaste maintainers <spaste@users.noreply.github.com>")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 include(CPack)

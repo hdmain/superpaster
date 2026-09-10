@@ -15,7 +15,8 @@ permissions:
 jobs:
   build-deb:
     name: Build Debian package
-    runs-on: ubuntu-24.04
+    # 22.04 keeps glibc older and avoids Ubuntu 24.04 *t64-only auto-deps
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -50,7 +51,11 @@ jobs:
           cd build
           cpack -G DEB
           ls -lh *.deb
+          echo "---- control ----"
           dpkg-deb -I *.deb
+          echo "---- Depends ----"
+          dpkg-deb -f *.deb Depends
+          echo "---- contents ----"
           dpkg-deb -c *.deb | head -n 40
 
       - name: Upload .deb artifact
