@@ -64,7 +64,7 @@ bool Application::initialize(bool openSettings, bool openOverlay)
     const bool desktopOk = m_desktopShortcut->registerShortcut();
     const bool x11Ok = m_hotkey->registerHotkey();
     if (!desktopOk && !x11Ok) {
-        qWarning("Spaste: no global Super+V backend available — use Open overlay in settings");
+        qWarning("Spaste: no global Super+V backend available - use Open overlay in settings");
     }
     refreshShortcutStatus();
 
@@ -96,13 +96,13 @@ void Application::showSettings()
     m_settings->activateWindow();
 }
 
-void Application::pasteItem(const QString& text)
+void Application::pasteItem(const ClipboardItem& item)
 {
     // Hide first so the previously focused app can receive the simulated Ctrl+V.
     if (m_overlay) {
         m_overlay->hideOverlay();
     }
-    m_paster->copyAndPaste(text);
+    m_paster->copyAndPaste(item);
 }
 
 void Application::setupTray()

@@ -1,9 +1,10 @@
 #pragma once
 
+#include "clipboard/ClipboardHistory.h"
+
 #include <QObject>
 
 class ThemeManager;
-class ClipboardHistory;
 class GlobalHotkey;
 class DesktopShortcut;
 class SettingsWindow;
@@ -26,7 +27,7 @@ public slots:
     void showSettings();
 
 private:
-    void pasteItem(const QString& text);
+    void pasteItem(const ClipboardItem& item);
     void setupTray();
     void refreshShortcutStatus();
 

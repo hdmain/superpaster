@@ -1,11 +1,12 @@
 #include "paste/AutoPaster.h"
 
 #include <QClipboard>
+#include <QDebug>
 #include <QGuiApplication>
+#include <QMimeData>
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTimer>
-#include <QDebug>
 
 #if defined(Q_OS_LINUX)
 #include <X11/Xlib.h>
@@ -18,9 +19,14 @@ AutoPaster::AutoPaster(QObject* parent)
 {
 }
 
-void AutoPaster::copyAndPaste(const QString& text)
+void AutoPaster::copyAndPaste(const ClipboardItem& item)
 {
-    QGuiApplication::clipboard()->setText(text);
+    QClipboard* clipboard = QGuiApplication::clipboard();
+    if (item.isImage()) {
+        clipboard->setImage(item.image);
+    } else {
+        clipboard->setText(item.text);
+    }
 
     // Give the previously focused window time to regain focus after the overlay hides.
     QTimer::singleShot(100, this, [this]() {

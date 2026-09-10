@@ -53,7 +53,7 @@ OverlayWindow::OverlayWindow(ClipboardHistory* history, QWidget* parent)
     header->addStretch();
     panelLayout->addLayout(header);
 
-    auto* subtitle = new QLabel(tr("Recent clipboard — stored in memory only"), panel);
+    auto* subtitle = new QLabel(tr("Recent clipboard, stored in memory only"), panel);
     subtitle->setObjectName(QStringLiteral("HintLabel"));
     panelLayout->addWidget(subtitle);
 
@@ -68,7 +68,7 @@ OverlayWindow::OverlayWindow(ClipboardHistory* history, QWidget* parent)
     m_listLayout->setSpacing(8);
     m_listLayout->addStretch();
 
-    m_emptyHint = new QLabel(tr("No copied items yet.\nCopy something to see it here."), listHost);
+    m_emptyHint = new QLabel(tr("No copied items yet.\nCopy text or an image to see it here."), listHost);
     m_emptyHint->setObjectName(QStringLiteral("EmptyHint"));
     m_emptyHint->setAlignment(Qt::AlignCenter);
     m_listLayout->insertWidget(0, m_emptyHint);
@@ -76,7 +76,7 @@ OverlayWindow::OverlayWindow(ClipboardHistory* history, QWidget* parent)
     m_scroll->setWidget(listHost);
     panelLayout->addWidget(m_scroll, 1);
 
-    auto* footer = new QLabel(tr("Click or Enter — copy & paste · Esc close · Super+V toggle"), panel);
+    auto* footer = new QLabel(tr("Click or Enter: copy & paste · Esc close · Super+V toggle"), panel);
     footer->setObjectName(QStringLiteral("HintLabel"));
     footer->setAlignment(Qt::AlignCenter);
     panelLayout->addWidget(footer);
@@ -135,10 +135,10 @@ void OverlayWindow::rebuildList()
 
     for (const ClipboardItem& clip : items) {
         const QString meta = clip.timestamp.toString(QStringLiteral("HH:mm:ss"));
-        auto* widget = new ClipboardItemWidget(clip.text, meta, m_scroll->widget());
-        connect(widget, &ClipboardItemWidget::activated, this, [this](const QString& text) {
+        auto* widget = new ClipboardItemWidget(clip, meta, m_scroll->widget());
+        connect(widget, &ClipboardItemWidget::activated, this, [this](const ClipboardItem& chosen) {
             hideOverlay();
-            emit itemChosen(text);
+            emit itemChosen(chosen);
         });
         m_listLayout->addWidget(widget);
         m_widgets.push_back(widget);
@@ -239,7 +239,7 @@ void OverlayWindow::activateSelected()
     if (m_selectedIndex < 0 || m_selectedIndex >= m_widgets.size()) {
         return;
     }
-    const QString text = m_widgets[m_selectedIndex]->text();
+    const ClipboardItem chosen = m_widgets[m_selectedIndex]->item();
     hideOverlay();
-    emit itemChosen(text);
+    emit itemChosen(chosen);
 }

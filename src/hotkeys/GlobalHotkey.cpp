@@ -83,7 +83,7 @@ bool GlobalHotkey::registerHotkey()
 
     m_impl->display = XOpenDisplay(nullptr);
     if (!m_impl->display) {
-        qWarning() << "Spaste: cannot open X11 display — Super+V unavailable "
+        qWarning() << "Spaste: cannot open X11 display - Super+V unavailable "
                       "(on Wayland, bind Super+V in your compositor or run under XWayland)";
         return false;
     }

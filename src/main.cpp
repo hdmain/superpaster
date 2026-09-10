@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     app.setQuitOnLastWindowClosed(false);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(QStringLiteral("Spaste — RAM-only clipboard history"));
+    parser.setApplicationDescription(QStringLiteral("Spaste - RAM-only clipboard history"));
     parser.addHelpOption();
     parser.addVersionOption();
     QCommandLineOption toggleOption(QStringList{QStringLiteral("toggle-overlay"), QStringLiteral("o")},

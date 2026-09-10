@@ -10,6 +10,7 @@
         <file>icons/trash.svg</file>
         <file>icons/monitor.svg</file>
         <file>icons/search.svg</file>
+        <file>icons/image.svg</file>
         <file>styles/light.qss</file>
         <file>styles/dark.qss</file>
     </qresource>

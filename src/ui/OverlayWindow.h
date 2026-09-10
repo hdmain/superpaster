@@ -1,9 +1,10 @@
 #pragma once
 
+#include "clipboard/ClipboardHistory.h"
+
 #include <QList>
 #include <QWidget>
 
-class ClipboardHistory;
 class ClipboardItemWidget;
 class QVBoxLayout;
 class QLabel;
@@ -24,7 +25,7 @@ public slots:
     void rebuildList();
 
 signals:
-    void itemChosen(const QString& text);
+    void itemChosen(const ClipboardItem& item);
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;

@@ -53,7 +53,7 @@ QString DesktopShortcut::statusText() const
 bool DesktopShortcut::registerShortcut()
 {
     if (!isSupported()) {
-        m_status = tr("Could not register Super+V — gsettings/GNOME keybindings unavailable.");
+        m_status = tr("Could not register Super+V - gsettings/GNOME keybindings unavailable.");
         return false;
     }
 

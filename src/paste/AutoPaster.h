@@ -1,7 +1,8 @@
 #pragma once
 
+#include "clipboard/ClipboardHistory.h"
+
 #include <QObject>
-#include <QString>
 
 class AutoPaster : public QObject {
     Q_OBJECT
@@ -9,8 +10,8 @@ class AutoPaster : public QObject {
 public:
     explicit AutoPaster(QObject* parent = nullptr);
 
-    // Copy text to the clipboard, then simulate Ctrl+V into the focused app.
-    void copyAndPaste(const QString& text);
+    // Put the item on the clipboard, then simulate Ctrl+V into the focused app.
+    void copyAndPaste(const ClipboardItem& item);
 
 signals:
     void pasteAttempted(bool simulated);

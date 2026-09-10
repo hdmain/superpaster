@@ -1,16 +1,28 @@
 #include "ui/ClipboardItemWidget.h"
 
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QEvent>
 #include <QMouseEvent>
+#include <QPixmap>
 #include <QStyle>
 #include <QSvgWidget>
 #include <QVBoxLayout>
 
-ClipboardItemWidget::ClipboardItemWidget(const QString& text, const QString& meta, QWidget* parent)
+namespace {
+
+QPixmap thumbnailFor(const QImage& image)
+{
+    constexpr int maxW = 96;
+    constexpr int maxH = 72;
+    return QPixmap::fromImage(image.scaled(maxW, maxH, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+}
+
+} // namespace
+
+ClipboardItemWidget::ClipboardItemWidget(const ClipboardItem& item, const QString& meta, QWidget* parent)
     : QFrame(parent)
-    , m_text(text)
+    , m_item(item)
 {
     setObjectName(QStringLiteral("ClipboardItem"));
     setCursor(Qt::PointingHandCursor);
@@ -20,38 +32,63 @@ ClipboardItemWidget::ClipboardItemWidget(const QString& text, const QString& met
     root->setContentsMargins(12, 10, 12, 10);
     root->setSpacing(12);
 
-    auto* icon = new QSvgWidget(QStringLiteral(":/icons/copy.svg"), this);
-    icon->setFixedSize(18, 18);
-    root->addWidget(icon, 0, Qt::AlignTop);
+    if (m_item.isImage()) {
+        auto* thumb = new QLabel(this);
+        thumb->setObjectName(QStringLiteral("ItemThumb"));
+        thumb->setFixedSize(96, 72);
+        thumb->setAlignment(Qt::AlignCenter);
+        thumb->setPixmap(thumbnailFor(m_item.image));
+        thumb->setScaledContents(false);
+        root->addWidget(thumb, 0, Qt::AlignTop);
+    } else {
+        auto* icon = new QSvgWidget(QStringLiteral(":/icons/copy.svg"), this);
+        icon->setFixedSize(18, 18);
+        root->addWidget(icon, 0, Qt::AlignTop);
+    }
 
     auto* textCol = new QVBoxLayout();
     textCol->setSpacing(2);
     textCol->setContentsMargins(0, 0, 0, 0);
 
-    m_preview = new QLabel(this);
-    m_preview->setObjectName(QStringLiteral("ItemPreview"));
-    m_preview->setWordWrap(true);
-    m_preview->setTextInteractionFlags(Qt::NoTextInteraction);
+    auto* preview = new QLabel(this);
+    preview->setObjectName(QStringLiteral("ItemPreview"));
+    preview->setWordWrap(true);
+    preview->setTextInteractionFlags(Qt::NoTextInteraction);
 
-    QString preview = text;
-    preview.replace(QLatin1Char('\n'), QLatin1Char(' '));
-    preview = preview.simplified();
-    if (preview.size() > 160) {
-        preview = preview.left(157) + QStringLiteral("...");
+    if (m_item.isImage()) {
+        const QString sizeLabel = tr("Image %1x%2")
+                                      .arg(m_item.image.width())
+                                      .arg(m_item.image.height());
+        if (!m_item.text.isEmpty()) {
+            QString extra = m_item.text.simplified();
+            if (extra.size() > 80) {
+                extra = extra.left(77) + QStringLiteral("...");
+            }
+            preview->setText(sizeLabel + QStringLiteral("\n") + extra);
+        } else {
+            preview->setText(sizeLabel);
+        }
+    } else {
+        QString text = m_item.text;
+        text.replace(QLatin1Char('\n'), QLatin1Char(' '));
+        text = text.simplified();
+        if (text.size() > 160) {
+            text = text.left(157) + QStringLiteral("...");
+        }
+        preview->setText(text);
     }
-    m_preview->setText(preview);
 
     auto* metaLabel = new QLabel(meta, this);
     metaLabel->setObjectName(QStringLiteral("ItemMeta"));
 
-    textCol->addWidget(m_preview);
+    textCol->addWidget(preview);
     textCol->addWidget(metaLabel);
     root->addLayout(textCol, 1);
 }
 
-QString ClipboardItemWidget::text() const
+ClipboardItem ClipboardItemWidget::item() const
 {
-    return m_text;
+    return m_item;
 }
 
 void ClipboardItemWidget::setSelected(bool selected)
@@ -65,7 +102,7 @@ void ClipboardItemWidget::setSelected(bool selected)
 void ClipboardItemWidget::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton) {
-        emit activated(m_text);
+        emit activated(m_item);
     }
     QFrame::mousePressEvent(event);
 }
@@ -73,7 +110,7 @@ void ClipboardItemWidget::mousePressEvent(QMouseEvent* event)
 void ClipboardItemWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton) {
-        emit activated(m_text);
+        emit activated(m_item);
     }
     QFrame::mouseDoubleClickEvent(event);
 }

@@ -87,8 +87,8 @@ void SettingsWindow::buildUi()
     layout->addWidget(shortcutsTitle);
 
     auto* shortcutHint = new QLabel(
-        tr("Super + V — open clipboard overlay\n"
-           "Launch Spaste — open this settings window"),
+        tr("Super + V - open clipboard overlay\n"
+           "Launch Spaste - open this settings window"),
         panel);
     shortcutHint->setObjectName(QStringLiteral("HintLabel"));
     layout->addWidget(shortcutHint);

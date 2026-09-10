@@ -14,8 +14,8 @@ Download from the site:
 
 **https://hdmain.github.io/superpaster/**
 
-- `.deb` package — `sudo apt install ./spaste-latest.deb`
-- standalone Linux binary — `chmod +x spaste-linux-x86_64 && ./spaste-linux-x86_64`
+- `.deb` package - `sudo apt install ./spaste-latest.deb`
+- standalone Linux binary - `chmod +x spaste-linux-x86_64 && ./spaste-linux-x86_64`
 
 If Qt packages are missing on your distro, install them first:
 

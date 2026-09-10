@@ -1,7 +1,8 @@
 #pragma once
 
+#include "clipboard/ClipboardHistory.h"
+
 #include <QFrame>
-#include <QString>
 
 class QLabel;
 class QMouseEvent;
@@ -12,13 +13,13 @@ class ClipboardItemWidget : public QFrame {
     Q_OBJECT
 
 public:
-    explicit ClipboardItemWidget(const QString& text, const QString& meta, QWidget* parent = nullptr);
+    explicit ClipboardItemWidget(const ClipboardItem& item, const QString& meta, QWidget* parent = nullptr);
 
-    [[nodiscard]] QString text() const;
+    [[nodiscard]] ClipboardItem item() const;
     void setSelected(bool selected);
 
 signals:
-    void activated(const QString& text);
+    void activated(const ClipboardItem& item);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -27,6 +28,5 @@ protected:
     void leaveEvent(QEvent* event) override;
 
 private:
-    QString m_text;
-    QLabel* m_preview = nullptr;
+    ClipboardItem m_item;
 };
