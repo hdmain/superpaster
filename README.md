@@ -20,7 +20,7 @@ If Qt packages are missing on your distro, install them first:
 sudo apt install libqt6core6 libqt6gui6 libqt6widgets6 libqt6svg6 libqt6svgwidgets6 qt6-qpa-plugins
 ```
 
-CI builds a Debian package on every push to `main` (Ubuntu 22.04). Dependencies accept both classic and Ubuntu 24.04 `*t64` Qt package names. Publishing a GitHub Release attaches the `.deb` automatically.
+CI builds a Debian package on every push to `main`. Dependencies accept both classic and Ubuntu 24.04 `*t64` Qt package names. Publishing a GitHub Release attaches the `.deb` automatically.
 
 ## Features
 
