@@ -2,12 +2,12 @@
 #include "clipboard/ClipboardHistory.h"
 #include "hotkeys/DesktopShortcut.h"
 #include "hotkeys/GlobalHotkey.h"
+#include "paste/AutoPaster.h"
 #include "theme/ThemeManager.h"
 #include "ui/OverlayWindow.h"
 #include "ui/SettingsWindow.h"
 
 #include <QApplication>
-#include <QClipboard>
 #include <QGuiApplication>
 #include <QIcon>
 #include <QMenu>
@@ -40,6 +40,7 @@ bool Application::initialize(bool openSettings, bool openOverlay)
     m_history = new ClipboardHistory(this);
     m_hotkey = new GlobalHotkey(this);
     m_desktopShortcut = new DesktopShortcut(this);
+    m_paster = new AutoPaster(this);
 
     m_themes->apply();
 
@@ -97,8 +98,11 @@ void Application::showSettings()
 
 void Application::pasteItem(const QString& text)
 {
-    QClipboard* clipboard = QApplication::clipboard();
-    clipboard->setText(text);
+    // Hide first so the previously focused app can receive the simulated Ctrl+V.
+    if (m_overlay) {
+        m_overlay->hideOverlay();
+    }
+    m_paster->copyAndPaste(text);
 }
 
 void Application::setupTray()

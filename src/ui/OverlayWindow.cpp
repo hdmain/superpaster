@@ -76,7 +76,7 @@ OverlayWindow::OverlayWindow(ClipboardHistory* history, QWidget* parent)
     m_scroll->setWidget(listHost);
     panelLayout->addWidget(m_scroll, 1);
 
-    auto* footer = new QLabel(tr("↑↓ navigate · Enter paste · Esc close · Super+V toggle"), panel);
+    auto* footer = new QLabel(tr("Click or Enter — copy & paste · Esc close · Super+V toggle"), panel);
     footer->setObjectName(QStringLiteral("HintLabel"));
     footer->setAlignment(Qt::AlignCenter);
     panelLayout->addWidget(footer);
@@ -137,8 +137,8 @@ void OverlayWindow::rebuildList()
         const QString meta = clip.timestamp.toString(QStringLiteral("HH:mm:ss"));
         auto* widget = new ClipboardItemWidget(clip.text, meta, m_scroll->widget());
         connect(widget, &ClipboardItemWidget::activated, this, [this](const QString& text) {
-            emit itemChosen(text);
             hideOverlay();
+            emit itemChosen(text);
         });
         m_listLayout->addWidget(widget);
         m_widgets.push_back(widget);
@@ -239,6 +239,7 @@ void OverlayWindow::activateSelected()
     if (m_selectedIndex < 0 || m_selectedIndex >= m_widgets.size()) {
         return;
     }
-    emit itemChosen(m_widgets[m_selectedIndex]->text());
+    const QString text = m_widgets[m_selectedIndex]->text();
     hideOverlay();
+    emit itemChosen(text);
 }

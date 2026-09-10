@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(Spaste VERSION 1.0.2 LANGUAGES CXX)
+project(Spaste VERSION 1.0.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -18,6 +18,8 @@ find_package(Qt6 6.2 REQUIRED COMPONENTS
 )
 
 find_package(X11 REQUIRED)
+find_library(X11_Xtst_LIB Xtst REQUIRED)
+find_path(X11_XTest_INCLUDE_PATH X11/extensions/XTest.h REQUIRED)
 
 qt_add_executable(spaste
     src/main.cpp
@@ -31,6 +33,8 @@ qt_add_executable(spaste
     src/hotkeys/DesktopShortcut.h
     src/hotkeys/GlobalHotkey.cpp
     src/hotkeys/GlobalHotkey.h
+    src/paste/AutoPaster.cpp
+    src/paste/AutoPaster.h
     src/theme/ThemeManager.cpp
     src/theme/ThemeManager.h
     src/ui/SettingsWindow.cpp
@@ -45,6 +49,7 @@ qt_add_executable(spaste
 target_include_directories(spaste PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${X11_INCLUDE_DIR}
+    ${X11_XTest_INCLUDE_PATH}
 )
 
 target_link_libraries(spaste PRIVATE
@@ -55,6 +60,7 @@ target_link_libraries(spaste PRIVATE
     Qt6::SvgWidgets
     Qt6::Network
     ${X11_LIBRARIES}
+    ${X11_Xtst_LIB}
 )
 
 target_compile_definitions(spaste PRIVATE
@@ -85,7 +91,8 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS OFF)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libqt6core6 | libqt6core6t64, libqt6gui6 | libqt6gui6t64, libqt6widgets6 | libqt6widgets6t64, libqt6svg6 | libqt6svg6t64, libqt6svgwidgets6 | libqt6svgwidgets6t64, libqt6network6 | libqt6network6t64, qt6-qpa-plugins, libx11-6, libc6, libstdc++6, libgcc-s1")
+    "libqt6core6 | libqt6core6t64, libqt6gui6 | libqt6gui6t64, libqt6widgets6 | libqt6widgets6t64, libqt6svg6 | libqt6svg6t64, libqt6svgwidgets6 | libqt6svgwidgets6t64, libqt6network6 | libqt6network6t64, qt6-qpa-plugins, libx11-6, libxtst6, libc6, libstdc++6, libgcc-s1")
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "xdotool | wtype")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Spaste maintainers <spaste@users.noreply.github.com>")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 include(CPack)

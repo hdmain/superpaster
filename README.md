@@ -94,7 +94,7 @@ This installs the binary, `spaste.desktop` launcher, and app icon so you can ope
 |--------|--------|
 | Start Spaste | Opens settings |
 | Super + V | Toggle clipboard overlay |
-| Click / Enter on an item | Copies it back to the clipboard |
+| Click / Enter on an item | Copies it and pastes into the focused app |
 | Esc / click outside | Closes the overlay |
 | Theme combo | System / Light / Dark |
 

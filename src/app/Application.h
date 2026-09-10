@@ -8,9 +8,9 @@ class GlobalHotkey;
 class DesktopShortcut;
 class SettingsWindow;
 class OverlayWindow;
+class AutoPaster;
 class QSystemTrayIcon;
 class QMenu;
-class SingleInstance;
 
 class Application : public QObject {
     Q_OBJECT
@@ -34,6 +34,7 @@ private:
     ClipboardHistory* m_history = nullptr;
     GlobalHotkey* m_hotkey = nullptr;
     DesktopShortcut* m_desktopShortcut = nullptr;
+    AutoPaster* m_paster = nullptr;
     SettingsWindow* m_settings = nullptr;
     OverlayWindow* m_overlay = nullptr;
     QSystemTrayIcon* m_tray = nullptr;
