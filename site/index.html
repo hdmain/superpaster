@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spaste — clipboard history for Linux</title>
+  <meta name="description" content="Spaste keeps your last 10 clipboard items in RAM. Download the Linux binary or .deb package." />
+  <link rel="icon" type="image/svg+xml" href="assets/clipboard.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <div class="grid" aria-hidden="true"></div>
+
+  <main class="hero">
+    <p class="brand">
+      <img src="assets/clipboard.svg" width="36" height="36" alt="" />
+      <span>Spaste</span>
+    </p>
+
+    <h1>Clipboard history that never touches disk.</h1>
+    <p class="lede">
+      Super+V opens a clean overlay with your 10 most recent copies.
+      History lives in memory only.
+    </p>
+
+    <div class="cta">
+      <a class="btn primary" id="btn-deb" href="downloads/spaste-latest.deb" download>
+        Download .deb
+        <span class="meta" id="deb-meta">amd64 · Debian / Ubuntu / Pop!_OS</span>
+      </a>
+      <a class="btn secondary" id="btn-bin" href="downloads/spaste-linux-x86_64" download>
+        Download binary
+        <span class="meta" id="bin-meta">Linux x86_64 · Qt 6</span>
+      </a>
+    </div>
+
+    <p class="hint">
+      Install: <code>sudo apt install ./spaste-latest.deb</code>
+      · Source on
+      <a href="https://github.com/hdmain/superpaster">GitHub</a>
+    </p>
+
+    <p class="build" id="build-info">Loading build info…</p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

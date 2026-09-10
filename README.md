@@ -1,18 +1,21 @@
 # Spaste
 
-[![Build .deb](https://github.com/hdmain/superpaster/actions/workflows/build-deb.yml/badge.svg)](https://github.com/hdmain/superpaster/actions/workflows/build-deb.yml)
+[![Build and publish](https://github.com/hdmain/superpaster/actions/workflows/build-deb.yml/badge.svg)](https://github.com/hdmain/superpaster/actions/workflows/build-deb.yml)
+
+**Download:** [hdmain.github.io/superpaster](https://hdmain.github.io/superpaster/)
 
 Lightweight Linux clipboard history manager built with **C++20** and **Qt 6**.
 
 Launching Spaste opens the **settings** window. Press **Super+V** for a frameless overlay of the 10 most recent clipboard items. History lives in RAM only and is never written to disk.
 
-## Install (.deb)
+## Install
 
-Download the latest `.deb` from [Releases](https://github.com/hdmain/superpaster/releases) or from the [Actions](https://github.com/hdmain/superpaster/actions/workflows/build-deb.yml) artifacts, then:
+Download from the site:
 
-```bash
-sudo apt install ./spaste_*.deb
-```
+**https://hdmain.github.io/superpaster/**
+
+- `.deb` package — `sudo apt install ./spaste-latest.deb`
+- standalone Linux binary — `chmod +x spaste-linux-x86_64 && ./spaste-linux-x86_64`
 
 If Qt packages are missing on your distro, install them first:
 
@@ -20,7 +23,7 @@ If Qt packages are missing on your distro, install them first:
 sudo apt install libqt6core6 libqt6gui6 libqt6widgets6 libqt6svg6 libqt6svgwidgets6 qt6-qpa-plugins
 ```
 
-CI builds a Debian package on every push to `main`. Dependencies accept both classic and Ubuntu 24.04 `*t64` Qt package names. Publishing a GitHub Release attaches the `.deb` automatically.
+CI publishes the site, binary, and `.deb` on every push to `main`. GitHub Releases also receive the packages when you publish a tag.
 
 ## Features
 

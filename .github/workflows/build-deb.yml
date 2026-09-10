@@ -1,4 +1,4 @@
-name: Build .deb
+name: Build and publish
 
 on:
   push:
@@ -11,11 +11,19 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build-deb:
-    name: Build Debian package
+    name: Build packages
     runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout
@@ -49,24 +57,84 @@ jobs:
         run: |
           cd build
           cpack -G DEB
-          ls -lh *.deb
-          echo "---- control ----"
+          ls -lh *.deb spaste
           dpkg-deb -I *.deb
-          echo "---- Depends ----"
           dpkg-deb -f *.deb Depends
-          echo "---- contents ----"
-          dpkg-deb -c *.deb | head -n 40
 
-      - name: Upload .deb artifact
+      - name: Collect download metadata
+        id: meta
+        run: |
+          DEB_PATH="$(ls build/spaste_*.deb | head -n1)"
+          DEB_NAME="$(basename "$DEB_PATH")"
+          VERSION="$(dpkg-deb -f "$DEB_PATH" Version)"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "deb_name=${DEB_NAME}" >> "$GITHUB_OUTPUT"
+          echo "deb_path=${DEB_PATH}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload CI artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: spaste-deb
-          path: build/*.deb
+          name: spaste-packages
+          path: |
+            build/spaste
+            build/spaste_*.deb
           if-no-files-found: error
 
-      - name: Attach .deb to GitHub Release
+      - name: Attach packages to GitHub Release
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "${{ github.event.release.tag_name }}" build/*.deb --clobber
+          gh release upload "${{ github.event.release.tag_name }}" \
+            build/spaste \
+            build/spaste_*.deb \
+            --clobber
+
+      - name: Assemble GitHub Pages site
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p public/downloads public/assets
+          cp -a site/. public/
+          cp build/spaste "public/downloads/spaste-linux-x86_64"
+          chmod +x "public/downloads/spaste-linux-x86_64"
+          cp "${{ steps.meta.outputs.deb_path }}" "public/downloads/${{ steps.meta.outputs.deb_name }}"
+          cp "${{ steps.meta.outputs.deb_path }}" "public/downloads/spaste-latest.deb"
+          cat > public/downloads/build.json <<EOF
+          {
+            "version": "${{ steps.meta.outputs.version }}",
+            "deb_name": "${{ steps.meta.outputs.deb_name }}",
+            "binary_name": "spaste-linux-x86_64",
+            "commit": "${{ github.sha }}",
+            "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "repo": "https://github.com/${{ github.repository }}"
+          }
+          EOF
+          # Strip leading spaces from heredoc JSON
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("public/downloads/build.json")
+          text = "\n".join(line.lstrip() for line in p.read_text().splitlines())
+          p.write_text(text + "\n")
+          print(p.read_text())
+          PY
+          find public -type f | sort
+          ls -lh public/downloads
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy-pages:
+    name: Deploy GitHub Pages
+    needs: build-deb
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
