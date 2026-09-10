@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(Spaste VERSION 1.0.1 LANGUAGES CXX)
+project(Spaste VERSION 1.0.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,6 +14,7 @@ find_package(Qt6 6.2 REQUIRED COMPONENTS
     Widgets
     Svg
     SvgWidgets
+    Network
 )
 
 find_package(X11 REQUIRED)
@@ -22,8 +23,12 @@ qt_add_executable(spaste
     src/main.cpp
     src/app/Application.cpp
     src/app/Application.h
+    src/app/SingleInstance.cpp
+    src/app/SingleInstance.h
     src/clipboard/ClipboardHistory.cpp
     src/clipboard/ClipboardHistory.h
+    src/hotkeys/DesktopShortcut.cpp
+    src/hotkeys/DesktopShortcut.h
     src/hotkeys/GlobalHotkey.cpp
     src/hotkeys/GlobalHotkey.h
     src/theme/ThemeManager.cpp
@@ -48,6 +53,7 @@ target_link_libraries(spaste PRIVATE
     Qt6::Widgets
     Qt6::Svg
     Qt6::SvgWidgets
+    Qt6::Network
     ${X11_LIBRARIES}
 )
 
@@ -79,7 +85,7 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS OFF)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS
-    "libqt6core6 | libqt6core6t64, libqt6gui6 | libqt6gui6t64, libqt6widgets6 | libqt6widgets6t64, libqt6svg6 | libqt6svg6t64, libqt6svgwidgets6 | libqt6svgwidgets6t64, qt6-qpa-plugins, libx11-6, libc6, libstdc++6, libgcc-s1")
+    "libqt6core6 | libqt6core6t64, libqt6gui6 | libqt6gui6t64, libqt6widgets6 | libqt6widgets6t64, libqt6svg6 | libqt6svg6t64, libqt6svgwidgets6 | libqt6svgwidgets6t64, libqt6network6 | libqt6network6t64, qt6-qpa-plugins, libx11-6, libc6, libstdc++6, libgcc-s1")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Spaste maintainers <spaste@users.noreply.github.com>")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 include(CPack)

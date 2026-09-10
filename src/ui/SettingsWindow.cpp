@@ -20,8 +20,15 @@ SettingsWindow::SettingsWindow(ThemeManager* themes, ClipboardHistory* history, 
     setObjectName(QStringLiteral("SettingsRoot"));
     setWindowTitle(QStringLiteral("Spaste"));
     setWindowIcon(QIcon(QStringLiteral(":/icons/clipboard.svg")));
-    setFixedSize(440, 420);
+    setFixedSize(460, 500);
     buildUi();
+}
+
+void SettingsWindow::setShortcutStatus(const QString& text)
+{
+    if (m_shortcutStatus) {
+        m_shortcutStatus->setText(text);
+    }
 }
 
 void SettingsWindow::buildUi()
@@ -85,6 +92,15 @@ void SettingsWindow::buildUi()
         panel);
     shortcutHint->setObjectName(QStringLiteral("HintLabel"));
     layout->addWidget(shortcutHint);
+
+    m_shortcutStatus = new QLabel(tr("Checking shortcut registration…"), panel);
+    m_shortcutStatus->setObjectName(QStringLiteral("HintLabel"));
+    m_shortcutStatus->setWordWrap(true);
+    layout->addWidget(m_shortcutStatus);
+
+    auto* repairBtn = new QPushButton(tr("Repair Super+V shortcut"), panel);
+    connect(repairBtn, &QPushButton::clicked, this, &SettingsWindow::reregisterShortcutRequested);
+    layout->addWidget(repairBtn);
 
     auto* historyTitle = new QLabel(tr("History"), panel);
     historyTitle->setObjectName(QStringLiteral("SectionTitle"));

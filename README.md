@@ -97,7 +97,7 @@ This installs the binary, `spaste.desktop` launcher, and app icon so you can ope
 
 ## Notes
 
-- **Super+V** uses an X11 global grab. On pure Wayland sessions without an XWayland display, register the same shortcut in your compositor to run/raise Spaste, or use **Open overlay** in settings.
+- **Super+V** is registered through GNOME/Pop!_OS desktop keybindings on Wayland (X11 grabs do not receive Super keys there). Spaste also frees the default notification binding for Super+V while it runs.
 - Clipboard contents are held in process memory only. Quitting Spaste clears history.
 - Icons are Lucide SVGs bundled under `resources/icons/`.
 
