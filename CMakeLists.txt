@@ -1,0 +1,81 @@
+cmake_minimum_required(VERSION 3.21)
+project(Spaste VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt6 6.2 REQUIRED COMPONENTS
+    Core
+    Gui
+    Widgets
+    Svg
+    SvgWidgets
+)
+
+find_package(X11 REQUIRED)
+
+qt_add_executable(spaste
+    src/main.cpp
+    src/app/Application.cpp
+    src/app/Application.h
+    src/clipboard/ClipboardHistory.cpp
+    src/clipboard/ClipboardHistory.h
+    src/hotkeys/GlobalHotkey.cpp
+    src/hotkeys/GlobalHotkey.h
+    src/theme/ThemeManager.cpp
+    src/theme/ThemeManager.h
+    src/ui/SettingsWindow.cpp
+    src/ui/SettingsWindow.h
+    src/ui/OverlayWindow.cpp
+    src/ui/OverlayWindow.h
+    src/ui/ClipboardItemWidget.cpp
+    src/ui/ClipboardItemWidget.h
+    resources/resources.qrc
+)
+
+target_include_directories(spaste PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${X11_INCLUDE_DIR}
+)
+
+target_link_libraries(spaste PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    Qt6::Svg
+    Qt6::SvgWidgets
+    ${X11_LIBRARIES}
+)
+
+target_compile_definitions(spaste PRIVATE
+    SPASTE_VERSION="${PROJECT_VERSION}"
+)
+
+include(GNUInstallDirs)
+
+install(TARGETS spaste RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES packaging/spaste.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+install(FILES resources/icons/clipboard.svg
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps
+        RENAME spaste.svg)
+
+# Debian package via CPack
+set(CPACK_PACKAGE_NAME "spaste")
+set(CPACK_PACKAGE_VENDOR "Spaste")
+set(CPACK_PACKAGE_CONTACT "Spaste maintainers <spaste@users.noreply.github.com>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lightweight RAM-only clipboard history for Linux")
+set(CPACK_PACKAGE_DESCRIPTION "Spaste is a Qt 6 clipboard history manager. Launching the app opens settings; Super+V shows a frameless overlay with the 10 most recent clipboard items. History is kept in memory only and is never written to disk.")
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/hdmain/superpaster")
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Spaste maintainers <spaste@users.noreply.github.com>")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+include(CPack)

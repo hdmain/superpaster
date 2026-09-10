@@ -1,0 +1,16 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file>icons/clipboard.svg</file>
+        <file>icons/settings.svg</file>
+        <file>icons/sun.svg</file>
+        <file>icons/moon.svg</file>
+        <file>icons/x.svg</file>
+        <file>icons/copy.svg</file>
+        <file>icons/trash.svg</file>
+        <file>icons/monitor.svg</file>
+        <file>icons/search.svg</file>
+        <file>styles/light.qss</file>
+        <file>styles/dark.qss</file>
+    </qresource>
+</RCC>

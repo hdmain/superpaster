@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Spaste
+GenericName=Clipboard Manager
+Comment=Lightweight RAM-only clipboard history for Linux
+Exec=spaste
+Icon=spaste
+Terminal=false
+Categories=Utility;Qt;
+Keywords=clipboard;paste;history;spaste;
+StartupNotify=true
+StartupWMClass=spaste
